@@ -135,7 +135,7 @@ const ReactVideoEditor: React.FC = () => {
       id: `clip-${clips.length + 1}`,
       start: lastItem.start + lastItem.duration,
       duration: 200,
-      src: "https://hgwavsootdmvmjdvfiwc.supabase.co/storage/v1/object/public/clips/reactvideoeditor-quality.mp4?t=2024-09-03T02%3A09%3A02.395Z",
+      src: "https://rwxrdxvxndclnqvznxfj.supabase.co/storage/v1/object/public/react-video-editor/open-source-video.mp4?t=2024-12-04T03%3A16%3A12.359Z",
       row: 0,
     };
 
@@ -161,7 +161,7 @@ const ReactVideoEditor: React.FC = () => {
       id: `text-${textOverlays.length + 1}`,
       start: lastItem.start + lastItem.duration,
       duration: 100,
-      text: `Text ${textOverlays.length + 1}`,
+      text: `Welcome to React Video Editor`,
       row: 0,
     };
 

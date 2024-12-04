@@ -1,15 +1,65 @@
+/**
+ * Open Source Video Editor Component
+ *
+ * This is an open source version of the commercial product found at
+ * https://www.reactvideoeditor.com/. The code is intentionally kept in a single
+ * component for demonstration purposes and clarity. However, this is not considered
+ * best practice for production applications.
+ *
+ * For production use, it's recommended to:
+ * - Split into smaller, focused components
+ * - Create custom hooks for state management
+ * - Implement proper error boundaries
+ *
+ * The animation templates used are from:
+ * https://www.reactvideoeditor.com/remotion-templates
+ */
+
 "use client";
 
-import React, { useState, useRef, useCallback, useMemo, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import { Player, PlayerRef } from "@remotion/player";
-import { Sequence, Video, interpolate, useCurrentFrame } from "remotion";
-import { LetterText, Plus, Text } from "lucide-react";
+import { Sequence, Video, useCurrentFrame, useVideoConfig } from "remotion";
+import { Code2, Plus } from "lucide-react";
+import { spring } from "remotion";
 
 import { Clip, TextOverlay } from "@/types/types";
 
 /**
+ * @fileoverview React Video Editor Component
+ * A video editing interface built with React and Remotion.
+ * Allows users to:
+ * - Add and arrange video clips on a timeline
+ * - Add text overlays with animations
+ * - Preview the composition in real-time
+ * - Supports desktop viewing only
+ *
+ * @requires @remotion/player - For video playback and composition
+ * @requires remotion - For sequences and video manipulation
+ */
+
+/**
+ * Interface for managing timeline items
+ * @typedef {Object} TimelineItem
+ * @property {string} id - Unique identifier
+ * @property {number} start - Start frame
+ * @property {number} duration - Duration in frames
+ * @property {number} row - Vertical position in timeline
+ */
+
+/**
  * TimelineMarker Component
- * Renders a marker on the timeline to indicate the current frame position
+ * @component
+ * @param {Object} props
+ * @param {number} props.currentFrame - Current playback position in frames
+ * @param {number} props.totalDuration - Total duration of composition in frames
+ * @returns {JSX.Element} A visual marker showing current playback position
  */
 const TimelineMarker: React.FC<{
   currentFrame: number;
@@ -37,8 +87,23 @@ const TimelineMarker: React.FC<{
 TimelineMarker.displayName = "TimelineMarker";
 
 /**
- * ReactVideoEditor Component
- * Main component for the video editor interface
+ * Main Video Editor Component
+ * @component
+ * @returns {JSX.Element} Complete video editor interface
+ *
+ * Features:
+ * - Video preview player
+ * - Timeline with clips and text overlays
+ * - Add clip and text overlay buttons
+ * - Mobile detection and warning
+ * - Real-time playback marker
+ *
+ * State Management:
+ * - clips: Array of video clips
+ * - textOverlays: Array of text overlays
+ * - totalDuration: Total composition duration
+ * - currentFrame: Current playback position
+ * - isMobile: Mobile device detection
  */
 const ReactVideoEditor: React.FC = () => {
   // State management
@@ -53,7 +118,9 @@ const ReactVideoEditor: React.FC = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
 
   /**
-   * Adds a new clip to the timeline
+   * Adds a new video clip to the timeline
+   * Automatically positions it after the last item
+   * @function
    */
   const addClip = () => {
     const lastItem = [...clips, ...textOverlays].reduce(
@@ -67,7 +134,7 @@ const ReactVideoEditor: React.FC = () => {
     const newClip: Clip = {
       id: `clip-${clips.length + 1}`,
       start: lastItem.start + lastItem.duration,
-      duration: 300,
+      duration: 200,
       src: "https://hgwavsootdmvmjdvfiwc.supabase.co/storage/v1/object/public/clips/reactvideoeditor-quality.mp4?t=2024-09-03T02%3A09%3A02.395Z",
       row: 0,
     };
@@ -78,6 +145,8 @@ const ReactVideoEditor: React.FC = () => {
 
   /**
    * Adds a new text overlay to the timeline
+   * Automatically positions it after the last item
+   * @function
    */
   const addTextOverlay = () => {
     const lastItem = [...clips, ...textOverlays].reduce(
@@ -101,7 +170,10 @@ const ReactVideoEditor: React.FC = () => {
   };
 
   /**
-   * Updates the total duration of the composition based on clips and text overlays
+   * Updates the total duration of the composition
+   * @function
+   * @param {Clip[]} updatedClips - Current array of video clips
+   * @param {TextOverlay[]} updatedTextOverlays - Current array of text overlays
    */
   const updateTotalDuration = (
     updatedClips: Clip[],
@@ -122,6 +194,9 @@ const ReactVideoEditor: React.FC = () => {
 
   /**
    * Composition component for Remotion Player
+   * Renders all clips and text overlays in sequence
+   * @function
+   * @returns {JSX.Element} Remotion composition
    */
   const Composition = useCallback(
     () => (
@@ -147,19 +222,21 @@ const ReactVideoEditor: React.FC = () => {
   );
 
   /**
-   * TimelineItem component for rendering clips and text overlays on the timeline
+   * Timeline Item Component
+   * Renders individual clips and text overlays on the timeline
+   * @component
+   * @param {Object} props
+   * @param {Clip | TextOverlay} props.item - Timeline item data
+   * @param {"clip" | "text"} props.type - Item type
+   * @param {number} props.index - Item index
+   * @returns {JSX.Element} Visual representation of timeline item
    */
   const TimelineItem: React.FC<{
     item: Clip | TextOverlay;
     type: "clip" | "text";
     index: number;
   }> = ({ item, type, index }) => {
-    const bgColor =
-      type === "clip"
-        ? "bg-indigo-500 to-indigo-400"
-        : type === "text"
-        ? "bg-purple-500 to-purple-400"
-        : "bg-green-500 to-green-400";
+    const bgColor = type === "clip" ? "bg-indigo-500" : "bg-purple-500";
 
     return (
       <div
@@ -174,8 +251,6 @@ const ReactVideoEditor: React.FC = () => {
         <div className="absolute inset-0 flex items-center justify-center text-xs text-white font-semibold">
           {type.charAt(0).toUpperCase() + type.slice(1)} {index + 1}
         </div>
-        <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-md cursor-ew-resize mt-1 mb-1 ml-1" />
-        <div className="absolute right-0 top-0 bottom-0 w-1.5 rounded-md cursor-ew-resize mt-1 mb-1 mr-1" />
       </div>
     );
   };
@@ -201,9 +276,34 @@ const ReactVideoEditor: React.FC = () => {
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
 
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Effect to add initial clip and text overlay
+  useEffect(() => {
+    if (clips.length === 0 && textOverlays.length === 0) {
+      const initialClip: Clip = {
+        id: "clip-1",
+        start: 0,
+        duration: 200,
+        src: "https://rwxrdxvxndclnqvznxfj.supabase.co/storage/v1/object/public/react-video-editor/open-source-video.mp4?t=2024-12-04T03%3A16%3A12.359Z",
+        row: 0,
+      };
+
+      const initialTextOverlay: TextOverlay = {
+        id: "text-1",
+        start: 200,
+        duration: 100,
+        text: "Welcome to React Video Editor",
+        row: 0,
+      };
+
+      setClips([initialClip]);
+      setTextOverlays([initialTextOverlay]);
+      updateTotalDuration([initialClip], [initialTextOverlay]);
+    }
   }, []);
 
   // Render mobile view message if on a mobile device
@@ -212,7 +312,9 @@ const ReactVideoEditor: React.FC = () => {
       <div className="flex items-center justify-center h-screen bg-gray-900 text-white p-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Mobile View Not Supported</h2>
-          <p className="text-md">This video editor is only available on desktop or laptop devices.</p>
+          <p className="text-md">
+            This video editor is only available on desktop or laptop devices.
+          </p>
         </div>
       </div>
     );
@@ -222,7 +324,7 @@ const ReactVideoEditor: React.FC = () => {
   return (
     <div className="flex-col text-white">
       {/* Player section */}
-      <div className="flex overflow-hidden">
+      <div className="mt-10 flex overflow-hidden">
         <div className="border border-gray-700 flex-grow p-6 flex items-center justify-center overflow-hidden bg-gray-800">
           <div className="w-full h-full flex items-center justify-center">
             <div
@@ -268,7 +370,7 @@ const ReactVideoEditor: React.FC = () => {
               onClick={addTextOverlay}
               className="bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-md transition-colors duration-200 flex items-center space-x-2"
             >
-              <LetterText className="h-5 w-5" />
+              <Plus className="h-5 w-5" />
               <span className="text-sm font-medium">Add Text</span>
             </button>
           </div>
@@ -277,7 +379,7 @@ const ReactVideoEditor: React.FC = () => {
         {/* Timeline items */}
         <div
           ref={timelineRef}
-          className="bg-gray-800 rounded-lg shadow-inner relative"
+          className="bg-gray-800 rounded-lg shadow-inner relative hover:cursor-not-allowed "
         >
           <div className="absolute inset-0">
             <div className="top-10 left-0 right-0 bottom-0 overflow-x-auto overflow-y-visible p-2">
@@ -319,18 +421,44 @@ const ReactVideoEditor: React.FC = () => {
           />
         </div>
       </div>
+      <div className="mt-4 text-center">
+        <a
+          href="https://github.com/reactvideoeditor/free-react-video-editor"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-md hover:bg-blue-700  hover:text-slate-100 transition-colors duration-200"
+        >
+          <Code2 className="w-5 h-5" />
+          Get the Code
+        </a>
+      </div>
     </div>
   );
 };
 
 /**
- * TextOverlayComponent
- * Renders a text overlay with a fade-in effect
+ * Text Overlay Component
+ * Renders animated text overlays in the composition
+ * @component
+ * @param {Object} props
+ * @param {string} props.text - Text to display
+ * @returns {JSX.Element} Animated text overlay
+ *
+ * Features:
+ * - Centered positioning
+ * - Fade-in animation using Remotion spring
+ * - Responsive text sizing
  */
 const TextOverlayComponent: React.FC<{ text: string }> = ({ text }) => {
   const frame = useCurrentFrame();
-  const opacity = interpolate(frame, [0, 30], [0, 1], {
-    extrapolateRight: "clamp",
+  const { fps } = useVideoConfig();
+
+  const opacity = spring({
+    frame,
+    fps,
+    from: 0,
+    to: 1,
+    durationInFrames: 30,
   });
 
   return (
@@ -340,14 +468,20 @@ const TextOverlayComponent: React.FC<{ text: string }> = ({ text }) => {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        fontSize: "64px",
-        fontWeight: "bold",
-        color: "white",
-        textShadow: "0 0 5px black",
-        opacity,
+        width: "100%",
+        textAlign: "center",
       }}
     >
-      {text}
+      <h1
+        style={{
+          opacity,
+          color: "white",
+          fontSize: "5rem",
+          fontWeight: "bold",
+        }}
+      >
+        {text}
+      </h1>
     </div>
   );
 };

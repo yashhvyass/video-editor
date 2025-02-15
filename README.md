@@ -52,3 +52,12 @@ You can start editing the project by modifying the files in the `app` directory.
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+### Open Source Acknowledgment and Remotion License Requirement:
+
+React Video Editor is built on top of the open-source technology [Remotion](https://www.remotion.dev/).
+
+**Important:** When using React Video Editor in a commercial project, you must obtain both the React Video Editor license **AND** a separate Remotion license. The React Video Editor license alone does not grant you the right to use Remotion in production.
+
+You can find the Remotion license terms [here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md). Please ensure you comply with both licenses before deploying your project to production.
+

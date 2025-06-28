@@ -199,34 +199,37 @@ const ReactVideoEditor: React.FC = () => {
       {/* Top Bar */}
       <TopBar onRenderVideo={handleRenderVideo} />
       
-      {/* Main Content - Fixed height to prevent timeline from pushing up */}
+      {/* Main Content */}
       <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Sidebar */}
         <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
-        {/* Video Preview - Takes remaining space */}
-        <div className="flex-1 min-w-0">
-          <VideoPreview
-            ref={playerRef}
-            composition={Composition}
-            totalDuration={totalDuration}
-            isPlaying={isPlaying}
-            onPlayPause={handlePlayPause}
-            currentFrame={currentFrame}
-          />
+        {/* Right Content Area - Video Preview + Timeline */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Video Preview */}
+          <div className="flex-1 min-h-0">
+            <VideoPreview
+              ref={playerRef}
+              composition={Composition}
+              totalDuration={totalDuration}
+              isPlaying={isPlaying}
+              onPlayPause={handlePlayPause}
+              currentFrame={currentFrame}
+            />
+          </div>
+          
+          {/* Timeline - Same width as video preview */}
+          <div className="h-64 flex-shrink-0">
+            <TimelineEnhanced
+              clips={clips}
+              textOverlays={textOverlays}
+              totalDuration={totalDuration}
+              currentFrame={currentFrame}
+              onAddClip={addClip}
+              onAddText={addTextOverlay}
+            />
+          </div>
         </div>
-      </div>
-      
-      {/* Timeline - Fixed height at bottom */}
-      <div className="h-64 flex-shrink-0">
-        <TimelineEnhanced
-          clips={clips}
-          textOverlays={textOverlays}
-          totalDuration={totalDuration}
-          currentFrame={currentFrame}
-          onAddClip={addClip}
-          onAddText={addTextOverlay}
-        />
       </div>
     </div>
   );

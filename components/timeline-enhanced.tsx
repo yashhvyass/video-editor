@@ -139,7 +139,7 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
       </div>
 
       {/* Timeline Ruler */}
-      <div className="h-8 bg-gray-800 border-b border-gray-700 relative pl-20">
+      <div className="h-8 bg-gray-800 border-b border-gray-700 relative">
         <div className="relative h-full">
           {generateTimeMarkers()}
         </div>
@@ -147,34 +147,25 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
 
       {/* Timeline Tracks */}
       <div className="flex-1 relative overflow-auto" ref={timelineRef}>
-        <div className="flex h-full">
-          {/* Track Labels */}
-          <div className="w-20 bg-gray-800 border-r border-gray-700 flex-shrink-0">
-            <div className="h-15 border-b border-gray-700 flex items-center px-3">
-              <span className="text-gray-400 text-xs font-medium">V1</span>
-            </div>
-            <div className="h-15 border-b border-gray-700 flex items-center px-3">
-              <span className="text-gray-400 text-xs font-medium">V2</span>
-            </div>
-            <div className="h-15 border-b border-gray-700 flex items-center px-3">
-              <span className="text-gray-400 text-xs font-medium">A1</span>
-            </div>
-          </div>
-
-          {/* Timeline Content */}
-          <div className="flex-1 relative">
-            {/* Track Backgrounds */}
-            {[0, 1, 2].map((trackIndex) => (
-              <div
-                key={trackIndex}
-                className="absolute w-full h-15 border-b border-gray-700"
-                style={{ top: `${trackIndex * 60}px` }}
-              >
-                <div className="w-full h-full bg-gray-850 hover:bg-gray-800 transition-colors"></div>
+        <div className="h-full">
+          {/* Track Backgrounds */}
+          {[0, 1, 2].map((trackIndex) => (
+            <div
+              key={trackIndex}
+              className="w-full h-15 border-b border-gray-700"
+              style={{ top: `${trackIndex * 60}px` }}
+            >
+              <div className="w-full h-full bg-gray-850 hover:bg-gray-800 transition-colors relative">
+                {/* Track Label */}
+                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs font-medium">
+                  {trackIndex === 0 ? 'V1' : trackIndex === 1 ? 'V2' : 'A1'}
+                </div>
               </div>
-            ))}
+            </div>
+          ))}
 
-            {/* Timeline Items */}
+          {/* Timeline Items */}
+          <div className="absolute inset-0">
             {clips.map((clip, index) => (
               <TimelineItem
                 key={clip.id}

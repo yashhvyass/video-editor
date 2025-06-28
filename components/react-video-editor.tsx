@@ -206,8 +206,8 @@ const ReactVideoEditor: React.FC = () => {
         
         {/* Right Content Area - Video Preview + Timeline */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Video Preview */}
-          <div className="flex-1 min-h-0">
+          {/* Video Preview - Takes about 60% of available height */}
+          <div className="flex-[3] min-h-0">
             <VideoPreview
               ref={playerRef}
               composition={Composition}
@@ -218,8 +218,8 @@ const ReactVideoEditor: React.FC = () => {
             />
           </div>
           
-          {/* Timeline - Same width as video preview */}
-          <div className="h-64 flex-shrink-0">
+          {/* Timeline - Takes about 40% of available height */}
+          <div className="flex-[2] min-h-[300px] max-h-[400px]">
             <TimelineEnhanced
               clips={clips}
               textOverlays={textOverlays}

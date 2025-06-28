@@ -98,7 +98,7 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
   );
 
   return (
-    <div className="h-80 bg-gray-900 border-t border-gray-700 flex flex-col">
+    <div className="h-80 bg-gray-900 border-t border-gray-700 flex flex-col ml-16">
       {/* Timeline Header */}
       <div className="h-12 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4">
         <div className="flex items-center space-x-4">
@@ -139,15 +139,17 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
       </div>
 
       {/* Timeline Ruler */}
-      <div className="h-8 bg-gray-800 border-b border-gray-700 relative">
-        {generateTimeMarkers()}
+      <div className="h-8 bg-gray-800 border-b border-gray-700 relative pl-20">
+        <div className="relative h-full">
+          {generateTimeMarkers()}
+        </div>
       </div>
 
       {/* Timeline Tracks */}
       <div className="flex-1 relative overflow-auto" ref={timelineRef}>
-        <div className="absolute inset-0">
+        <div className="flex h-full">
           {/* Track Labels */}
-          <div className="absolute left-0 top-0 w-20 h-full bg-gray-800 border-r border-gray-700 z-10">
+          <div className="w-20 bg-gray-800 border-r border-gray-700 flex-shrink-0">
             <div className="h-15 border-b border-gray-700 flex items-center px-3">
               <span className="text-gray-400 text-xs font-medium">V1</span>
             </div>
@@ -160,7 +162,7 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
           </div>
 
           {/* Timeline Content */}
-          <div className="ml-20 relative h-full">
+          <div className="flex-1 relative">
             {/* Track Backgrounds */}
             {[0, 1, 2].map((trackIndex) => (
               <div

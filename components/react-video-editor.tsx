@@ -199,31 +199,35 @@ const ReactVideoEditor: React.FC = () => {
       {/* Top Bar */}
       <TopBar onRenderVideo={handleRenderVideo} />
       
-      {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
+      {/* Main Content - Fixed height to prevent timeline from pushing up */}
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Sidebar */}
         <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
-        {/* Video Preview */}
-        <VideoPreview
-          ref={playerRef}
-          composition={Composition}
-          totalDuration={totalDuration}
-          isPlaying={isPlaying}
-          onPlayPause={handlePlayPause}
-          currentFrame={currentFrame}
-        />
+        {/* Video Preview - Takes remaining space */}
+        <div className="flex-1 min-w-0">
+          <VideoPreview
+            ref={playerRef}
+            composition={Composition}
+            totalDuration={totalDuration}
+            isPlaying={isPlaying}
+            onPlayPause={handlePlayPause}
+            currentFrame={currentFrame}
+          />
+        </div>
       </div>
       
-      {/* Timeline */}
-      <TimelineEnhanced
-        clips={clips}
-        textOverlays={textOverlays}
-        totalDuration={totalDuration}
-        currentFrame={currentFrame}
-        onAddClip={addClip}
-        onAddText={addTextOverlay}
-      />
+      {/* Timeline - Fixed height at bottom */}
+      <div className="h-64 flex-shrink-0">
+        <TimelineEnhanced
+          clips={clips}
+          textOverlays={textOverlays}
+          totalDuration={totalDuration}
+          currentFrame={currentFrame}
+          onAddClip={addClip}
+          onAddText={addTextOverlay}
+        />
+      </div>
     </div>
   );
 };

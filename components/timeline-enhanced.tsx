@@ -66,7 +66,7 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
         style={{
           left: `${left}%`,
           width: `${width}%`,
-          top: `${trackIndex * 60 + 40}px`,
+          top: `${trackIndex * 60 + 8}px`,
         }}
       >
         <div className="p-2 h-full flex items-center">
@@ -98,7 +98,7 @@ const TimelineEnhanced: React.FC<TimelineEnhancedProps> = ({
   );
 
   return (
-    <div className="h-80 bg-gray-900 border-t border-gray-700 flex flex-col ml-16">
+    <div className="h-full bg-gray-900 border-t border-gray-700 flex flex-col">
       {/* Timeline Header */}
       <div className="h-12 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4">
         <div className="flex items-center space-x-4">
